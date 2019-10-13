@@ -11,4 +11,6 @@ Portland, Oregon, USA
 
 ### Sample Results
 ![portland](Portland.png)
-
+![copenhagen](Copenhagen.png)
+![boston](Boston.png) ![real_boston](Real_Boston.png)
+![new york](New_York.png)

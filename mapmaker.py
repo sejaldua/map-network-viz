@@ -4,7 +4,10 @@ import requests
 import matplotlib.cm as cm
 import matplotlib.colors as colors
 from matplotlib.lines import Line2D
+from geopy import geocoders
+from geopy.geocoders import Nominatim
 from PIL import Image, ImageOps, ImageColor, ImageFont, ImageDraw
+geolocator = Nominatim()
 
 # define city/cities
 while True:
@@ -16,7 +19,10 @@ while True:
                 print("Sorry, that format was not recognized by OpenStreetMap. Try again.")
 
 
-#city = ["Portland, Oregon, USA"]
+# Center of map
+loc = geolocator.geocode(city)
+latitude = loc.latitude
+longitude = loc.longitude
 
 print("data: obtained")
 
@@ -62,10 +68,6 @@ for item in data:
 
         roadWidths.append(linewidth)
 
-# Center of map
-latitude = 45.5051
-longitude = -122.6750
-
 # Bbox sides
 north = latitude + 0.035
 south = latitude - 0.035
@@ -97,6 +99,8 @@ for text in l.get_texts():
 print("saving")
 
 # Save figure
-fig.savefig(city.split()[0][:-1] + ".png", dpi=300, bbox_inches='tight', format="png", facecolor=fig.get_facecolor(), transparent=True)
+name = city[0:(city.find(','))]
+name = name.replace(" ", "_")
+fig.savefig(name + ".png", dpi=300, bbox_inches='tight', format="png", facecolor=fig.get_facecolor(), transparent=True)
 
 
