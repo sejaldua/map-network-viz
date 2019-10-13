@@ -7,10 +7,17 @@ from matplotlib.lines import Line2D
 from PIL import Image, ImageOps, ImageColor, ImageFont, ImageDraw
 
 # define city/cities
-places = ["Portland, Oregon, USA"]
+while True:
+        try:
+                city = input("Please enter a city (e.g. Los Angeles, California, USA \n OR Tokyo, Japan) ")
+                G = ox.graph_from_place(city, network_type="all", simplify=True)
+                break
+        except:
+                city = input("Sorry, that format was not recognized by OpenStreetMap. Try again. ")
+                G = ox.graph_from_place(city, network_type = "all", simplify = True)
 
-# get data for places
-G = ox.graph_from_place(places, network_type = "all", simplify = True)
+
+#city = ["Portland, Oregon, USA"]
 
 print("data: obtained")
 
@@ -72,24 +79,28 @@ west = longitude - 0.05
 print("drawing map")
 
 # Make Map
-fig, ax = ox.plot_graph(G, node_size=0, bbox = (north, south, east, west), margin = 0, fig_height=20, fig_width=40, dpi = 300,  bgcolor = "#061529", save = False, edge_color=roadColors, edge_linewidth=roadWidths, edge_alpha=1)
+fig, ax = ox.plot_graph(G, node_size=0, bbox = (north, south, east, west), margin = 0, fig_height=30, fig_width=30, dpi = 300,  bgcolor = "#061529", save=False, edge_color=roadColors, edge_linewidth=roadWidths, edge_alpha=1)
+
+print("plotted graph")
 
 # Text and marker size
-markersize = 16
-fontsize = 16
+markersize = 12
+fontsize = 12
 
 # Add legend
 legend_elements = [Line2D([0], [0], marker='s', color="#061529", label= 'Length < 100 m', markerfacecolor="#d40a47", markersize=markersize), Line2D([0], [0], marker='s', color="#061529", label= 'Length between 100-200 m', markerfacecolor="#e78119", markersize=markersize), Line2D([0], [0], marker='s', color="#061529", label= 'Length between 200-400 m', markerfacecolor="#30bab0", markersize=markersize), Line2D([0], [0], marker='s', color="#061529", label= 'Length between 400-800 m', markerfacecolor="#bbbbbb", markersize=markersize), Line2D([0], [0], marker='s', color="#061529", label= 'Length > 800 m', markerfacecolor="w", markersize=markersize)]    
                       
-l = ax.legend(handles=legend_elements, bbox_to_anchor=(0.0, 0.0), frameon=True, ncol=1, facecolor = '#061529', framealpha = 0.9, loc='lower left',  fontsize = fontsize, prop={'family':"Avenir", 'size':fontsize})  
+l = ax.legend(handles=legend_elements, bbox_to_anchor=(0.0, 0.0), frameon=True, ncol=1, facecolor = '#061529', framealpha = 0.9, loc='lower left',  fontsize = fontsize, prop={'family':"Georgia", 'size':fontsize})  
+
+print("made the legend")
   
 # Legend font color
 for text in l.get_texts():
     text.set_color("w")
     
-print("about to save")
+print("saving")
 
 # Save figure
-fig.savefig("Portland.png", dpi=300, bbox_inches='tight', format="png", facecolor=fig.get_facecolor(), transparent=True)
+fig.savefig(city.split()[0][:-1] + ".png", dpi=300, bbox_inches='tight', format="png", facecolor=fig.get_facecolor(), transparent=True)
 
 
