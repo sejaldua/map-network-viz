@@ -13,8 +13,7 @@ while True:
                 G = ox.graph_from_place(city, network_type="all", simplify=True)
                 break
         except:
-                city = input("Sorry, that format was not recognized by OpenStreetMap. Try again. ")
-                G = ox.graph_from_place(city, network_type = "all", simplify = True)
+                print("Sorry, that format was not recognized by OpenStreetMap. Try again.")
 
 
 #city = ["Portland, Oregon, USA"]
@@ -22,15 +21,12 @@ while True:
 print("data: obtained")
 
 # unpack data
-u = []
-v = []
-key = []
-data = []
-for uu, vv, kkey, ddata in G.edges(keys = True, data = True):
-        u.append(uu)
-        v.append(vv)
-        key.append(kkey)
-        data.append(ddata)
+u, v, key, data = [], [], [], []
+for u_elem, v_elem, key_elem, data_elem in G.edges(keys = True, data = True):
+        u.append(u_elem)
+        v.append(v_elem)
+        key.append(key_elem)
+        data.append(data_elem)
 
 print("data: unpacked")
 
@@ -79,7 +75,7 @@ west = longitude - 0.05
 print("drawing map")
 
 # Make Map
-fig, ax = ox.plot_graph(G, node_size=0, bbox = (north, south, east, west), margin = 0, fig_height=30, fig_width=30, dpi = 300,  bgcolor = "#061529", save=False, edge_color=roadColors, edge_linewidth=roadWidths, edge_alpha=1)
+fig, ax = ox.plot_graph(G, node_size=0, bbox = (north, south, east, west), margin = 0, fig_height=40, fig_width=40, dpi = 300,  bgcolor = "#061529", save=False, edge_color=roadColors, edge_linewidth=roadWidths, edge_alpha=1)
 
 print("plotted graph")
 

@@ -9,3 +9,6 @@ When you are prompted to input a city, you must enter it in a format
 that matches the following:
 Portland, Oregon, USA
 
+### Sample Results
+![portland](Portland.png)
+
