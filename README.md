@@ -10,7 +10,15 @@ that matches the following:
 Portland, Oregon, USA
 
 ### Sample Results
+
+#### Portland, OR, USA
 ![portland](Portland.png)
+
+#### Copenhagen Municipality, Denmark
 ![copenhagen](Copenhagen.png)
+
+#### Boston, MA, USA
 ![boston](Boston.png) ![real_boston](Real_Boston.png)
+
+#### New York, NY, USA
 ![new york](New_York.png)
