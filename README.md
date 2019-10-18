@@ -10,7 +10,14 @@ When you are prompted to input a city, you must enter it in a format
 that matches the following:
 Portland, Oregon, USA
 
-### Sample Results
+### Original Data >>> Generated Map
+#### New York, NY, USA
+![new york comparison](new_york_comparison.png)
+
+#### Boston, MA, USA
+![boston comparison](boston_comparison.png)
+
+### More Sample Results
 
 #### Portland, OR, USA
 ![portland](Portland.png)
@@ -18,8 +25,7 @@ Portland, Oregon, USA
 #### Copenhagen Municipality, Denmark
 ![copenhagen](Copenhagen.png)
 
-#### Boston, MA, USA
-![boston](Boston.png) ![real_boston](Real_Boston.png)
+Try it out for yourself!
 
-#### New York, NY, USA
-![new york](New_York.png)
+When I get some time, I'm going to try to make a custom color picker
+for those design-oriented people out there.
