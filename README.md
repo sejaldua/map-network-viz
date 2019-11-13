@@ -12,21 +12,21 @@ Portland, Oregon, USA
 
 ### Original Data >>> Generated Map
 #### New York, NY, USA
-![new york comparison](new_york_comparison.png)
+![new york comparison](city_maps/new_york_comparison.png)
 
 #### Boston, MA, USA
-![boston comparison](boston_comparison.png)
+![boston comparison](city_maps/boston_comparison.png)
 
 ### More Sample Results
 
 #### Portland, OR, USA
-![portland](Portland.png)
+![portland](city_maps/Portland.png)
 
 #### Copenhagen Municipality, Denmark
-![copenhagen](Copenhagen.png)
+![copenhagen](city_maps/Copenhagen.png)
 
-#### Venice, Itality
-![venice](Venice.png)
+#### Venice, Italy
+![venice](city_maps/Venice.png)
 
 Try it out for yourself!
 
