@@ -8,7 +8,7 @@ from matplotlib.lines import Line2D
 from geopy import geocoders
 from geopy.geocoders import Nominatim
 from PIL import Image, ImageOps, ImageColor, ImageFont, ImageDraw
-geolocator = Nominatim()
+geolocator = Nominatim(user_agent="sejaldua@gmail.com")
 
 #--------------------------------------------------------------------
 
@@ -88,7 +88,7 @@ west = longitude - 0.05
 print("drawing map")
 
 # Make Map
-fig, ax = ox.plot_graph(G, node_size=0, bbox = (north, south, east, west), margin = 0, fig_height=40, fig_width=40, dpi = 300,  bgcolor = "#061529", save=False, edge_color=roadColors, edge_linewidth=roadWidths, edge_alpha=1)
+fig, ax = ox.plot_graph(G, node_size=0, bbox = (north, south, east, west), figsize=(40,40), dpi = 300,  bgcolor = "#061529", save=False, edge_color=roadColors, edge_linewidth=roadWidths, edge_alpha=1)
 
 print("plotted graph")
 
