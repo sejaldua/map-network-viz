@@ -10,6 +10,10 @@ from geopy.geocoders import Nominatim
 from PIL import Image, ImageOps, ImageColor, ImageFont, ImageDraw
 import matplotlib.pyplot as plt
 
+PALETTE_A = ["#AAE28D", "#37D2BB", "#E76F51", "#27BACE", "#ED4591"]
+PALETTE_B = ["#FFB7C3", "#F57A80", "#F6BD60", "#17BEBB", "#F0F2A6"]
+PALETTE = PALETTE_A
+
 plt.ioff()
 
 geolocator = Nominatim(user_agent="sejaldua@gmail.com")
@@ -42,15 +46,15 @@ roadColors = []
 for item in data:
     if "length" in item.keys():
         if item["length"] <= 100:
-            color = "#d40a47"
+            color = PALETTE_B[0]
         elif item["length"] > 100 and item["length"] <= 200:
-            color = "#e78119"
+            color = PALETTE_B[1]
         elif item["length"] > 200 and item["length"] <= 400:
-            color = "#30bab0"
+            color = PALETTE_B[2]
         elif item["length"] > 400 and item["length"] <= 800:
-            color = "#bbbbbb"
+            color = PALETTE_B[3]
         else:
-            color = "w"
+            color = PALETTE_B[4]
     roadColors.append(color)
 
 roadWidths = []
@@ -69,7 +73,7 @@ west = longitude - 0.05
 
 # Make Map
 fig, ax = ox.plot_graph(G, node_size=0, bbox = (north, south, east, west), figsize=(40,40), dpi = 300,  
-    bgcolor = "#061529", save=False, edge_color=roadColors, edge_linewidth=roadWidths, edge_alpha=1);
+    bgcolor = "#1C3144", save=False, edge_color=roadColors, edge_linewidth=roadWidths, edge_alpha=1);
 
 # text and marker size
 # markersize = 12
@@ -90,7 +94,8 @@ fig, ax = ox.plot_graph(G, node_size=0, bbox = (north, south, east, west), figsi
 # save figure
 name = city[0:(city.find(','))]
 name = name.replace(" ", "_")
-fig.savefig(name + ".png", dpi=300, bbox_inches='tight', format="png", facecolor=fig.get_facecolor(), transparent=False);
+suffix = "_B" if PALETTE == PALETTE_B else '_A' 
+fig.savefig(f'./city_maps/{name}{suffix}.png', dpi=300, bbox_inches='tight', format="png", facecolor=fig.get_facecolor(), transparent=False);
 
 #--------------------------------------------------------------------
 
