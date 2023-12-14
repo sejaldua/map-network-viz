@@ -4,15 +4,15 @@ import numpy as np
 
 # Define the paths to your 9 images
 image_paths = [
-    "./city_maps/Rome.png",
-    "./city_maps/Bogota.png",
-    "./city_maps/Tokyo.png",
-    "./city_maps/Moscow.png",
-    "./city_maps/Portland.png",
-    "./city_maps/New_York.png",
-    "./city_maps/Stockholm.png",
-    "./city_maps/Budapest.png",
-    "./city_maps/Vancouver.png",
+    "./city_maps/Rome_A.png",
+    "./city_maps/Amsterdam_B.png",
+    "./city_maps/Tokyo_A.png",
+    "./city_maps/New_York_B.png",
+    "./city_maps/Portland_A.png",
+    "./city_maps/Vienna_B.png",
+    "./city_maps/Boston_A.png",
+    "./city_maps/Paris_B.png",
+    "./city_maps/Madrid_A.png",
 ]
 
 # Check if there are exactly 9 images
@@ -48,8 +48,8 @@ for i in range(3):
             axes[i, j].imshow(images[index])
             axes[i, j].set_xticks([])
             axes[i, j].set_yticks([])
-            axes[i, j].set_ylim([0, images[index].shape[0]])
-            axes[i, j].set_xlim([0, images[index].shape[1]])
+            # axes[i, j].set_ylim([0, images[index].shape[0]])
+            # axes[i, j].set_xlim([0, images[index].shape[1]])
         else:
             axes[i, j].axis("off")
 

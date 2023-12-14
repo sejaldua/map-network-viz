@@ -12,7 +12,7 @@ import matplotlib.pyplot as plt
 
 PALETTE_A = ["#AAE28D", "#37D2BB", "#E76F51", "#27BACE", "#ED4591"]
 PALETTE_B = ["#FFB7C3", "#F57A80", "#F6BD60", "#17BEBB", "#F0F2A6"]
-PALETTE = PALETTE_A
+PALETTE = PALETTE_B
 
 plt.ioff()
 
@@ -46,15 +46,15 @@ roadColors = []
 for item in data:
     if "length" in item.keys():
         if item["length"] <= 100:
-            color = PALETTE_B[0]
+            color = PALETTE[0]
         elif item["length"] > 100 and item["length"] <= 200:
-            color = PALETTE_B[1]
+            color = PALETTE[1]
         elif item["length"] > 200 and item["length"] <= 400:
-            color = PALETTE_B[2]
+            color = PALETTE[2]
         elif item["length"] > 400 and item["length"] <= 800:
-            color = PALETTE_B[3]
+            color = PALETTE[3]
         else:
-            color = PALETTE_B[4]
+            color = PALETTE[4]
     roadColors.append(color)
 
 roadWidths = []
