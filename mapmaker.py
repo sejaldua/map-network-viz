@@ -22,6 +22,7 @@ while True:
     try:
         city = input("Please enter a city (e.g. Los Angeles, California, USA OR Tokyo, Japan) ")
         G = ox.graph_from_place(city, network_type="all", simplify=True)
+        print(ox.stats.basic_stats(G))
         break
     except:
         print("Sorry, that format was not recognized by OpenStreetMap. Try again.")
