@@ -10,86 +10,102 @@ from geopy.geocoders import Nominatim
 from PIL import Image, ImageOps, ImageColor, ImageFont, ImageDraw
 import matplotlib.pyplot as plt
 
+st.set_page_config(page_title='Map Maker', page_icon='globe')
+
+container1 = st.sidebar.container()
+container2 = st.sidebar.container()
+
 PALETTE = ["#FFB7C3", "#F57A80", "#F6BD60", "#17BEBB", "#F0F2A6"]
+col1, col2, col3, col4, col5 = container2.columns(5)
+PALETTE[0] = col1.color_picker('Color 1', PALETTE[0])
+PALETTE[1] = col2.color_picker('Color 2', PALETTE[1])
+PALETTE[2] = col3.color_picker('Color 3', PALETTE[2])
+PALETTE[3] = col4.color_picker('Color 4', PALETTE[3])
+PALETTE[4] = col5.color_picker('Color 5', PALETTE[4])
+legend_on = container2.toggle('Include legend', value=True)
 
 plt.ioff()
 
 geolocator = Nominatim(user_agent="sejaldua@gmail.com")
 
-city = st.sidebar.text_input("Please enter a city (e.g. Los Angeles, California, USA OR Tokyo, Japan) ")
-if st.sidebar.button('Make Map!'):
-    with st.spinner():
-        G = ox.graph_from_place(city, network_type="all", simplify=True)
-        print(ox.stats.basic_stats(G))
 
-            # locate latitude and longitude of the city to place it in the center of the map
-    loc = geolocator.geocode(city)
-    latitude = loc.latitude
-    longitude = loc.longitude
-    print('------------------------')
-    print('latitude:', latitude)
-    print('longitude:', longitude)
-    print('------------------------')
+st.title('Map Maker')
 
-    u, v, key, data = [], [], [], []
-    for u_elem, v_elem, key_elem, data_elem in G.edges(keys = True, data = True):
+mode = container1.selectbox('Choose map-maker mode', ['City Name', 'Geo-coordinates'])
+city = container1.text_input("Please enter a city (e.g. Los Angeles, California, USA OR Tokyo, Japan) ")
+if city != "":
+    if container1.button('Make Map!'):
+        st.toast('Getting map data from geopandas')
+        with st.spinner():
+            G = ox.graph_from_place(city, network_type="all", simplify=True)
+            print(ox.stats.basic_stats(G))
+
+                # locate latitude and longitude of the city to place it in the center of the map
+        loc = geolocator.geocode(city)
+        latitude = loc.latitude
+        longitude = loc.longitude
+
+        st.toast('Color-coding streets and highways')
+        u, v, key, data = [], [], [], []
+        for u_elem, v_elem, key_elem, data_elem in G.edges(keys = True, data = True):
             u.append(u_elem)
             v.append(v_elem)
             key.append(key_elem)
             data.append(data_elem)
 
-    roadColors = []
-    for item in data:
-        if "length" in item.keys():
-            if item["length"] <= 100:
-                color = PALETTE[0]
-            elif item["length"] > 100 and item["length"] <= 200:
-                color = PALETTE[1]
-            elif item["length"] > 200 and item["length"] <= 400:
-                color = PALETTE[2]
-            elif item["length"] > 400 and item["length"] <= 800:
-                color = PALETTE[3]
+        roadColors = []
+        for item in data:
+            if "length" in item.keys():
+                if item["length"] <= 100:
+                    color = PALETTE[0]
+                elif item["length"] > 100 and item["length"] <= 200:
+                    color = PALETTE[1]
+                elif item["length"] > 200 and item["length"] <= 400:
+                    color = PALETTE[2]
+                elif item["length"] > 400 and item["length"] <= 800:
+                    color = PALETTE[3]
+                else:
+                    color = PALETTE[4]
+            roadColors.append(color)
+
+        roadWidths = []
+        for item in data:
+            if "footway" in item["highway"]:
+                linewidth = 0.8
             else:
-                color = PALETTE[4]
-        roadColors.append(color)
+                linewidth = 2
 
-    roadWidths = []
-    for item in data:
-        if "footway" in item["highway"]:
-            linewidth = 1
-        else:
-            linewidth = 2.5
+            roadWidths.append(linewidth)
 
-        roadWidths.append(linewidth)
+        north = latitude + 0.035
+        south = latitude - 0.035
+        east = longitude + 0.05
+        west = longitude - 0.05
 
-    north = latitude + 0.035
-    south = latitude - 0.035
-    east = longitude + 0.05
-    west = longitude - 0.05
+        st.toast('Plotting map and legend')
+        fig, ax = ox.plot_graph(G, node_size=0, bbox = (north, south, east, west), figsize=(12,12), dpi = 300,  
+            bgcolor = "#1C3144", save=False, edge_color=roadColors, edge_linewidth=roadWidths, edge_alpha=1);
 
-    # Make Map
-    fig, ax = ox.plot_graph(G, node_size=0, bbox = (north, south, east, west), figsize=(40,40), dpi = 300,  
-        bgcolor = "#1C3144", save=False, edge_color=roadColors, edge_linewidth=roadWidths, edge_alpha=1);
+        # text and marker size
+        markersize = 12
+        fontsize = 12
 
-    # text and marker size
-    markersize = 12
-    fontsize = 12
+        # add legend
+        legend_elements = [Line2D([0], [0], marker='s', color="#061529", label= 'Length < 100 m', markerfacecolor=PALETTE[0], markersize=markersize), 
+                Line2D([0], [0], marker='s', color="#061529", label= 'Length between 100-200 m', markerfacecolor=PALETTE[1], markersize=markersize), 
+                Line2D([0], [0], marker='s', color="#061529", label= 'Length between 200-400 m', markerfacecolor=PALETTE[2], markersize=markersize), 
+                Line2D([0], [0], marker='s', color="#061529", label= 'Length between 400-800 m', markerfacecolor=PALETTE[3], markersize=markersize), 
+                Line2D([0], [0], marker='s', color="#061529", label= 'Length > 800 m', markerfacecolor=PALETTE[4], markersize=markersize)]                 
+        l = ax.legend(handles=legend_elements, bbox_to_anchor=(0.0, 0.0), frameon=True, ncol=1, facecolor = '#061529', framealpha = 0.9, loc='lower left',  fontsize = fontsize, prop={'family':"Georgia", 'size':fontsize})  
 
-    # add legend
-    legend_elements = [Line2D([0], [0], marker='s', color="#061529", label= 'Length < 100 m', markerfacecolor="#d40a47", markersize=markersize), 
-            Line2D([0], [0], marker='s', color="#061529", label= 'Length between 100-200 m', markerfacecolor="#e78119", markersize=markersize), 
-            Line2D([0], [0], marker='s', color="#061529", label= 'Length between 200-400 m', markerfacecolor="#30bab0", markersize=markersize), 
-            Line2D([0], [0], marker='s', color="#061529", label= 'Length between 400-800 m', markerfacecolor="#bbbbbb", markersize=markersize), 
-            Line2D([0], [0], marker='s', color="#061529", label= 'Length > 800 m', markerfacecolor="w", markersize=markersize)]                 
-    l = ax.legend(handles=legend_elements, bbox_to_anchor=(0.0, 0.0), frameon=True, ncol=1, facecolor = '#061529', framealpha = 0.9, loc='lower left',  fontsize = fontsize, prop={'family':"Georgia", 'size':fontsize})  
+        # legend font color
+        for text in l.get_texts():
+            text.set_color("w")
 
-    # legend font color
-    for text in l.get_texts():
-        text.set_color("w")
+        print("making figure")
+        st.pyplot(fig)
 
-    print("making figure")
-    st.pyplot(fig)
-
-# except:
-#     st.warning("Sorry, that format was not recognized by OpenStreetMap. Try again.")
+    # else:
+    #     st.warning('Please enter a city in the sidebar on the left')
+        # st.warning("Sorry, that format was not recognized by OpenStreetMap. Try again.")
 
