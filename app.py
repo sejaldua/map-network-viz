@@ -32,18 +32,29 @@ geolocator = Nominatim(user_agent="sejaldua@gmail.com")
 st.title('Map Maker')
 
 mode = container1.selectbox('Choose map-maker mode', ['City Name', 'Geo-coordinates'])
-city = container1.text_input("Please enter a city (e.g. Los Angeles, California, USA OR Tokyo, Japan) ")
-if city != "":
+city = ""
+latitude, longitude = None, None
+col1, col2 = container1.columns(2)
+if mode == 'City Name':
+    city = container1.text_input("Please enter a city (e.g. Los Angeles, California, USA OR Tokyo, Japan) ")
+else:
+    latitude = col1.number_input('Latitude')
+    longitude = col2.number_input("longitude")
+    dist = container1.number_input('Distance (square meters) from center', value=1000)
+if city != "" or (latitude is not None and longitude is not None):
     if container1.button('Make Map!'):
         st.toast('Getting map data from geopandas')
         with st.spinner():
-            G = ox.graph_from_place(city, network_type="all", simplify=True)
-            print(ox.stats.basic_stats(G))
+            if mode == 'City Name':
+                G = ox.graph_from_place(city, network_type="all", retain_all=True, simplify=False)
+                                # locate latitude and longitude of the city to place it in the center of the map
+                loc = geolocator.geocode(city)
+                latitude = loc.latitude
+                longitude = loc.longitude
 
-                # locate latitude and longitude of the city to place it in the center of the map
-        loc = geolocator.geocode(city)
-        latitude = loc.latitude
-        longitude = loc.longitude
+            else:
+                G = ox.graph_from_point((latitude, longitude), dist, network_type="all", retain_all=True, simplify=False)
+            print(ox.stats.basic_stats(G))
 
         st.toast('Color-coding streets and highways')
         u, v, key, data = [], [], [], []
@@ -90,19 +101,19 @@ if city != "":
         markersize = 12
         fontsize = 12
 
-        # add legend
-        legend_elements = [Line2D([0], [0], marker='s', color="#061529", label= 'Length < 100 m', markerfacecolor=PALETTE[0], markersize=markersize), 
-                Line2D([0], [0], marker='s', color="#061529", label= 'Length between 100-200 m', markerfacecolor=PALETTE[1], markersize=markersize), 
-                Line2D([0], [0], marker='s', color="#061529", label= 'Length between 200-400 m', markerfacecolor=PALETTE[2], markersize=markersize), 
-                Line2D([0], [0], marker='s', color="#061529", label= 'Length between 400-800 m', markerfacecolor=PALETTE[3], markersize=markersize), 
-                Line2D([0], [0], marker='s', color="#061529", label= 'Length > 800 m', markerfacecolor=PALETTE[4], markersize=markersize)]                 
-        l = ax.legend(handles=legend_elements, bbox_to_anchor=(0.0, 0.0), frameon=True, ncol=1, facecolor = '#061529', framealpha = 0.9, loc='lower left',  fontsize = fontsize, prop={'family':"Georgia", 'size':fontsize})  
+        if legend_on:
+            # add legend
+            legend_elements = [Line2D([0], [0], marker='s', color="#061529", label= 'Length < 100 m', markerfacecolor=PALETTE[0], markersize=markersize), 
+                    Line2D([0], [0], marker='s', color="#061529", label= 'Length between 100-200 m', markerfacecolor=PALETTE[1], markersize=markersize), 
+                    Line2D([0], [0], marker='s', color="#061529", label= 'Length between 200-400 m', markerfacecolor=PALETTE[2], markersize=markersize), 
+                    Line2D([0], [0], marker='s', color="#061529", label= 'Length between 400-800 m', markerfacecolor=PALETTE[3], markersize=markersize), 
+                    Line2D([0], [0], marker='s', color="#061529", label= 'Length > 800 m', markerfacecolor=PALETTE[4], markersize=markersize)]                 
+            l = ax.legend(handles=legend_elements, bbox_to_anchor=(0.0, 0.0), frameon=True, ncol=1, facecolor = '#061529', framealpha = 0.9, loc='lower left',  fontsize = fontsize, prop={'family':"Georgia", 'size':fontsize})  
 
-        # legend font color
-        for text in l.get_texts():
-            text.set_color("w")
+            # legend font color
+            for text in l.get_texts():
+                text.set_color("w")
 
-        print("making figure")
         st.pyplot(fig)
 
     # else:
