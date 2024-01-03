@@ -1,3 +1,4 @@
 osmnx
 geopandas
 geopy
+matplotlib
