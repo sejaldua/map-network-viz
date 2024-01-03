@@ -19,4 +19,4 @@ that matches the following:
 
 ### More Maps
 
-<img src="city_maps/Prague.png" width="300" height="300"/><img src="city_maps/Vancouver.png" width="300" height="300"/><img src="city_maps/Portland_A.png" width="300" height="300"/>
+<img src="city_maps/Prague.png" width="200" height="200"/><img src="city_maps/Vancouver.png" width="200" height="200"/><img src="city_maps/Portland_A.png" width="200" height="200"/>
