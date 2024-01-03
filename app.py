@@ -40,18 +40,17 @@ if mode == 'City Name':
 else:
     latitude = col1.number_input('Latitude')
     longitude = col2.number_input("longitude")
-    dist = container1.number_input('Distance (square meters) from center', value=1000)
+    dist = container1.number_input('Distance (square meters) from center', value=5000)
 if city != "" or (latitude is not None and longitude is not None):
     if container1.button('Make Map!'):
         st.toast('Getting map data from geopandas')
         with st.spinner():
             if mode == 'City Name':
-                G = ox.graph_from_place(city, network_type="all", retain_all=True, simplify=False)
-                                # locate latitude and longitude of the city to place it in the center of the map
                 loc = geolocator.geocode(city)
                 latitude = loc.latitude
                 longitude = loc.longitude
-
+                dist = 5000
+                G = ox.graph_from_point((latitude, longitude), dist, network_type="all", retain_all=True, simplify=False)
             else:
                 G = ox.graph_from_point((latitude, longitude), dist, network_type="all", retain_all=True, simplify=False)
             print(ox.stats.basic_stats(G))
@@ -115,6 +114,18 @@ if city != "" or (latitude is not None and longitude is not None):
                 text.set_color("w")
 
         st.pyplot(fig)
+        name = city[0:(city.find(','))]
+        name = name.replace(" ", "_")
+        # Save to file first or an image file has already existed.
+        fn = f'{name}.png'
+        plt.savefig(fn, dpi=300, bbox_inches='tight', format="png", facecolor=fig.get_facecolor(), transparent=False)
+        with open(fn, "rb") as img:
+            btn = st.download_button(
+                label="Download Map",
+                data=img,
+                file_name=fn,
+                mime="image/png"
+            )
 
     # else:
     #     st.warning('Please enter a city in the sidebar on the left')
