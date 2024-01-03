@@ -8,27 +8,15 @@ What you'll need to do (via Terminal) in order to use this program:
 
 When you are prompted to input a city, you must enter it in a format
 that matches the following:
-Portland, Oregon, USA
+- > Portland, Oregon, USA
+- > Sydney, Australia
 
-### Original Data >>> Generated Map
-#### New York, NY, USA
-![new york comparison](city_maps/new_york_comparison.png)
+### Sample Maps
 
-#### Boston, MA, USA
-![boston comparison](city_maps/boston_comparison.png)
+<img src="city_maps/new_york_comparison.png" width="600"/>
 
-### More Sample Results
+<img src="city_maps/boston_comparison.png" width="600"/>
 
-#### Portland, OR, USA
-![portland](city_maps/Portland.png)
+### More Maps
 
-#### Copenhagen Municipality, Denmark
-![copenhagen](city_maps/Copenhagen.png)
-
-#### Venice, Italy
-![venice](city_maps/Venice.png)
-
-Try it out for yourself!
-
-When I get some time, I'm going to try to make a custom color picker
-for those design-oriented people out there.
+<img src="city_maps/Prague.png" width="300" height="300"/><img src="city_maps/Vancouver.png" width="300" height="300"/><img src="city_maps/Portland_A.png" width="300" height="300"/>
