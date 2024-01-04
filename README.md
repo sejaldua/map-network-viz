@@ -11,12 +11,11 @@ that matches the following:
 - > Portland, Oregon, USA
 - > Sydney, Australia
 
-### Sample Maps
+### Comparison
 
 <img src="city_maps/new_york_comparison.png" width="600"/>
 
-<img src="city_maps/boston_comparison.png" width="600"/>
 
-### More Maps
+### Sample Maps
 
 <img src="city_maps/Prague.png" width="200" height="200"/><img src="city_maps/Vancouver.png" width="200" height="200"/><img src="city_maps/Portland_A.png" width="200" height="200"/>
