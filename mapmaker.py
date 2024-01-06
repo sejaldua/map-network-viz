@@ -44,6 +44,7 @@ for u_elem, v_elem, key_elem, data_elem in G.edges(keys = True, data = True):
         data.append(data_elem)
 
 roadColors = []
+print(data)
 for item in data:
     if "length" in item.keys():
         if item["length"] <= 100:

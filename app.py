@@ -127,7 +127,3 @@ if city != "" or (latitude is not None and longitude is not None):
                 mime="image/png"
             )
 
-    # else:
-    #     st.warning('Please enter a city in the sidebar on the left')
-        # st.warning("Sorry, that format was not recognized by OpenStreetMap. Try again.")
-
