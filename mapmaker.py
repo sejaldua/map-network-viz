@@ -9,10 +9,12 @@ from geopy import geocoders
 from geopy.geocoders import Nominatim
 from PIL import Image, ImageOps, ImageColor, ImageFont, ImageDraw
 import matplotlib.pyplot as plt
+from pprint import pprint
 
 PALETTE_A = ["#AAE28D", "#37D2BB", "#E76F51", "#27BACE", "#ED4591"]
 PALETTE_B = ["#FFB7C3", "#F57A80", "#F6BD60", "#17BEBB", "#F0F2A6"]
-PALETTE = PALETTE_B
+PALETTE_C = ["#FFB7C3", "#750d37", "#F57A80", "#F6BD60", "#AAE28D", "#aadaba", "#27BACE", "#F0F2A6"]
+PALETTE = PALETTE_C
 
 plt.ioff()
 
@@ -21,20 +23,20 @@ geolocator = Nominatim(user_agent="sejaldua@gmail.com")
 while True:
     try:
         city = input("Please enter a city (e.g. Los Angeles, California, USA OR Tokyo, Japan) ")
-        G = ox.graph_from_place(city, network_type="all", simplify=True)
+        loc = geolocator.geocode(city)
+        latitude = loc.latitude
+        longitude = loc.longitude
+        # locate latitude and longitude of the city to place it in the center of the map
+        print('------------------------')
+        print('latitude:', latitude)
+        print('longitude:', longitude)
+        print('------------------------')
+        dist = 3000
+        G = ox.graph_from_point((latitude, longitude), dist, network_type="all", retain_all=True, simplify=False)
         print(ox.stats.basic_stats(G))
         break
     except:
         print("Sorry, that format was not recognized by OpenStreetMap. Try again.")
-
-# locate latitude and longitude of the city to place it in the center of the map
-loc = geolocator.geocode(city)
-latitude = loc.latitude
-longitude = loc.longitude
-print('------------------------')
-print('latitude:', latitude)
-print('longitude:', longitude)
-print('------------------------')
 
 u, v, key, data = [], [], [], []
 for u_elem, v_elem, key_elem, data_elem in G.edges(keys = True, data = True):
@@ -44,20 +46,42 @@ for u_elem, v_elem, key_elem, data_elem in G.edges(keys = True, data = True):
         data.append(data_elem)
 
 roadColors = []
-print(data)
-for item in data:
-    if "length" in item.keys():
-        if item["length"] <= 100:
-            color = PALETTE[0]
-        elif item["length"] > 100 and item["length"] <= 200:
-            color = PALETTE[1]
-        elif item["length"] > 200 and item["length"] <= 400:
-            color = PALETTE[2]
-        elif item["length"] > 400 and item["length"] <= 800:
-            color = PALETTE[3]
-        else:
-            color = PALETTE[4]
-    roadColors.append(color)
+pprint(data)
+color_code = 'road-type'
+if color_code == 'length':
+    for item in data:
+        if "length" in item.keys():
+            if item["length"] <= 100:
+                color = PALETTE[0]
+            elif item["length"] > 100 and item["length"] <= 200:
+                color = PALETTE[1]
+            elif item["length"] > 200 and item["length"] <= 400:
+                color = PALETTE[2]
+            elif item["length"] > 400 and item["length"] <= 800:
+                color = PALETTE[3]
+            else:
+                color = PALETTE[4]
+        roadColors.append(color)
+elif color_code == 'road-type':
+    for item in data:
+        if "highway" in item.keys() and item['highway'] != 'service':
+            if item["highway"] in ['footway', 'pedestrian']:
+                color = PALETTE[0]
+            elif item["highway"] in ['primary', 'primary_link']:
+                color = PALETTE[1]
+            elif item["highway"] in ['secondary', 'secondary_link']:
+                color = PALETTE[2]
+            elif item["highway"] in ['tertiary', 'tertiary_link']:
+                color = PALETTE[3]
+            elif item["highway"] == 'cycleway':
+                color = PALETTE[4]
+            elif item["highway"] in ['motorway', 'motorway_link']:
+                color = PALETTE[5]
+            elif item["highway"] == 'residential':
+                color = PALETTE[6]
+            else:
+                color = PALETTE[7]
+        roadColors.append(color)
 
 roadWidths = []
 for item in data:
@@ -74,8 +98,17 @@ east = longitude + 0.05
 west = longitude - 0.05
 
 # Make Map
-fig, ax = ox.plot_graph(G, node_size=0, bbox = (north, south, east, west), figsize=(40,40), dpi = 300,  
-    bgcolor = "#1C3144", save=False, edge_color=roadColors, edge_linewidth=roadWidths, edge_alpha=1);
+fig, ax = ox.plot_graph(G, 
+    node_size=0, 
+    # bbox = (north, south, east, west), 
+    figsize=(40,40), 
+    dpi = 300,  
+    bgcolor = "#1C3144", 
+    save=False, 
+    edge_color=roadColors, 
+    edge_linewidth=roadWidths, 
+    edge_alpha=1
+);
 
 # text and marker size
 # markersize = 12

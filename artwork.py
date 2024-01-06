@@ -4,15 +4,15 @@ import numpy as np
 
 # Define the paths to your 9 images
 image_paths = [
-    "./city_maps/Rome_A.png",
-    "./city_maps/Amsterdam_B.png",
-    "./city_maps/Tokyo_A.png",
-    "./city_maps/New_York_B.png",
-    "./city_maps/Portland_A.png",
-    "./city_maps/Vienna_B.png",
+    "./city_maps/New_York_A.png",
+    "./city_maps/Chicago_A.png",
+    "./city_maps/Los_Angeles_A.png",
+    "./city_maps/San_Francisco_A.png",
+    "./city_maps/Austin_A.png",
+    "./city_maps/Washington_A.png",
+    "./city_maps/San_Diego_A.png",
+    "./city_maps/Denver_A.png",
     "./city_maps/Boston_A.png",
-    "./city_maps/Paris_B.png",
-    "./city_maps/Madrid_A.png",
 ]
 
 # Check if there are exactly 9 images
