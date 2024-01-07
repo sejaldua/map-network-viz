@@ -1,6 +1,6 @@
 [project]
 name = "map-network-viz"
-version = "0.0.2"
+version = "0.0.3"
 authors = [
   { name="Sejal Dua", email="sejaldua@gmail.com" },
 ]
@@ -18,5 +18,5 @@ Homepage = "https://github.com/sejaldua/map-network-viz"
 Issues = "https://github.com/sejaldua/map-network-viz/issues"
 
 [build-system]
-requires = ["setuptools>=61.0", "osmnx", "geopandas", "geopy", "matplotlib"]
+requires = ["setuptools>=61.0", "geopandas", "geopy", "matplotlib", "osmnx>=1.8.0"]
 build-backend = "setuptools.build_meta"

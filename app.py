@@ -35,7 +35,7 @@ else:
     PALETTE[4] = col2.color_picker('> 800 meters', PALETTE[7])
 
 
-legend_on = container2.toggle('Include legend', value=True)
+include_legend = container2.toggle('Include legend', value=True)
 
 plt.ioff()
 
@@ -63,9 +63,9 @@ if city != "" or (latitude is not None and longitude is not None):
                 latitude = loc.latitude
                 longitude = loc.longitude
                 dist = 5000
-                G = ox.graph_from_point((latitude, longitude), dist, network_type="all", retain_all=True, simplify=False)
+                G = ox.graph_from_point((latitude, longitude), dist, network_type="all", retain_all=True, simplify=True)
             else:
-                G = ox.graph_from_point((latitude, longitude), dist, network_type="all", retain_all=True, simplify=False)
+                G = ox.graph_from_point((latitude, longitude), dist, network_type="all", retain_all=True, simplify=True)
             print(ox.stats.basic_stats(G))
 
         st.toast('Color-coding streets and highways')
@@ -143,13 +143,22 @@ if city != "" or (latitude is not None and longitude is not None):
         markersize = 12
         fontsize = 12
 
-        if legend_on:
-            # add legend
-            legend_elements = [Line2D([0], [0], marker='s', color="#061529", label= 'Length < 100 m', markerfacecolor=PALETTE[0], markersize=markersize), 
-                    Line2D([0], [0], marker='s', color="#061529", label= 'Length between 100-200 m', markerfacecolor=PALETTE[1], markersize=markersize), 
-                    Line2D([0], [0], marker='s', color="#061529", label= 'Length between 200-400 m', markerfacecolor=PALETTE[2], markersize=markersize), 
-                    Line2D([0], [0], marker='s', color="#061529", label= 'Length between 400-800 m', markerfacecolor=PALETTE[3], markersize=markersize), 
-                    Line2D([0], [0], marker='s', color="#061529", label= 'Length > 800 m', markerfacecolor=PALETTE[4], markersize=markersize)]                 
+        if include_legend:
+            if color_code_by == 'Road Length':
+                legend_elements = [Line2D([0], [0], marker='s', color="#061529", label= 'Length < 100 m', markerfacecolor=PALETTE[0], markersize=markersize), 
+                        Line2D([0], [0], marker='s', color="#061529", label= 'Length between 100-200 m', markerfacecolor=PALETTE[1], markersize=markersize), 
+                        Line2D([0], [0], marker='s', color="#061529", label= 'Length between 200-400 m', markerfacecolor=PALETTE[2], markersize=markersize), 
+                        Line2D([0], [0], marker='s', color="#061529", label= 'Length between 400-800 m', markerfacecolor=PALETTE[3], markersize=markersize), 
+                        Line2D([0], [0], marker='s', color="#061529", label= 'Length > 800 m', markerfacecolor=PALETTE[4], markersize=markersize)]  
+            else:
+                legend_elements = [Line2D([0], [0], marker='s', color="#061529", label= 'Footway', markerfacecolor=PALETTE[0], markersize=markersize), 
+                        Line2D([0], [0], marker='s', color="#061529", label= 'Primary', markerfacecolor=PALETTE[1], markersize=markersize), 
+                        Line2D([0], [0], marker='s', color="#061529", label= 'Secondary', markerfacecolor=PALETTE[2], markersize=markersize), 
+                        Line2D([0], [0], marker='s', color="#061529", label= 'Tertiary', markerfacecolor=PALETTE[3], markersize=markersize), 
+                        Line2D([0], [0], marker='s', color="#061529", label= 'Cycleway', markerfacecolor=PALETTE[4], markersize=markersize),
+                        Line2D([0], [0], marker='s', color="#061529", label= 'Motorway', markerfacecolor=PALETTE[5], markersize=markersize), 
+                        Line2D([0], [0], marker='s', color="#061529", label= 'Residential', markerfacecolor=PALETTE[6], markersize=markersize),
+                        Line2D([0], [0], marker='s', color="#061529", label= 'Other', markerfacecolor=PALETTE[7], markersize=markersize)]     
             l = ax.legend(handles=legend_elements, bbox_to_anchor=(0.0, 0.0), frameon=True, ncol=1, facecolor = '#061529', framealpha = 0.9, loc='lower left',  fontsize = fontsize, prop={'family':"Georgia", 'size':fontsize})  
 
             # legend font color

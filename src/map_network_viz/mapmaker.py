@@ -15,7 +15,7 @@ PALETTE_B = ["#FFB7C3", "#F57A80", "#F6BD60", "#17BEBB", "#F0F2A6"]
 PALETTE_C = ["#FFB7C3", "#750d37", "#F57A80", "#F6BD60", "#AAE28D", "#aadaba", "#27BACE", "#F0F2A6"]
 PALETTE = PALETTE_C
 
-def graph_city(city, PALETTE, distance_km=3000, color_code_by='road-type', legend=True, save=True):
+def graph_city(city, PALETTE, distance_km=3000, color_code_by='road-type', include_legend=True, save=True):
     """
     Generates a graph of the city using OpenStreetMap and netowrkx functionality from the osmnx library.
 
@@ -28,8 +28,8 @@ def graph_city(city, PALETTE, distance_km=3000, color_code_by='road-type', legen
     distance_km : int
         The distance (in kilometers) within which to graph the city.
     color_code_by : str
-        The type of attribute to use to color the graph.
-    legend : bool
+        The type of attribute to use to color the graph. Options are 'road-type' or 'length'. Defaults to 'road-type'.
+    include_legend : bool
         Whether or not to add a legend to the graph.
     save : bool
         Whether or not to save the graph as a png file.
@@ -40,7 +40,6 @@ def graph_city(city, PALETTE, distance_km=3000, color_code_by='road-type', legen
     """
     
     plt.ioff()
-    legend = True
     geolocator = Nominatim(user_agent="sejaldua@gmail.com")
 
     try:
@@ -48,16 +47,15 @@ def graph_city(city, PALETTE, distance_km=3000, color_code_by='road-type', legen
         latitude = loc.latitude
         longitude = loc.longitude
         G = ox.graph_from_point((latitude, longitude), distance_km, network_type="all", retain_all=True, simplify=False)
-        print(ox.stats.basic_stats(G))
     except:
         raise ValueError("City format was not recognized by OpenStreetMap. Please try specifying a city name in the format of 'City, State, Country'.")
 
     u, v, key, data = [], [], [], []
     for u_elem, v_elem, key_elem, data_elem in G.edges(keys = True, data = True):
-            u.append(u_elem)
-            v.append(v_elem)
-            key.append(key_elem)
-            data.append(data_elem)
+        u.append(u_elem)
+        v.append(v_elem)
+        key.append(key_elem)
+        data.append(data_elem)
 
     roadColors = []
     if color_code_by == 'length':
@@ -110,11 +108,11 @@ def graph_city(city, PALETTE, distance_km=3000, color_code_by='road-type', legen
         edge_alpha=1
     );
 
-    if legend:
+    if include_legend:
         # text and marker size
         markersize = 10
         fontsize = 10
-        if color_code_by == 'road-length':
+        if color_code_by == 'length':
             legend_elements = [Line2D([0], [0], marker='s', color="#061529", label= 'Length < 100 m', markerfacecolor=PALETTE[0], markersize=markersize), 
                     Line2D([0], [0], marker='s', color="#061529", label= 'Length between 100-200 m', markerfacecolor=PALETTE[1], markersize=markersize), 
                     Line2D([0], [0], marker='s', color="#061529", label= 'Length between 200-400 m', markerfacecolor=PALETTE[2], markersize=markersize), 
@@ -128,9 +126,8 @@ def graph_city(city, PALETTE, distance_km=3000, color_code_by='road-type', legen
                     Line2D([0], [0], marker='s', color="#061529", label= 'Cycleway', markerfacecolor=PALETTE[4], markersize=markersize),
                     Line2D([0], [0], marker='s', color="#061529", label= 'Motorway', markerfacecolor=PALETTE[5], markersize=markersize), 
                     Line2D([0], [0], marker='s', color="#061529", label= 'Residential', markerfacecolor=PALETTE[6], markersize=markersize),
-                    Line2D([0], [0], marker='s', color="#061529", label= 'Other', markerfacecolor=PALETTE[7], markersize=markersize)],       
-        l = ax.legend(handles=legend_elements, bbox_to_anchor=(0.0, 0.0), frameon=True, ncol=1, facecolor = '#061529', 
-        framealpha = 0.9, loc='lower left',  fontsize = fontsize, prop={'family':"Georgia", 'size':fontsize})  
+                    Line2D([0], [0], marker='s', color="#061529", label= 'Other', markerfacecolor=PALETTE[7], markersize=markersize)]     
+        l = ax.legend(handles=legend_elements, bbox_to_anchor=(0.0, 0.0), frameon=True, ncol=1, facecolor = '#061529', framealpha = 0.9, loc='lower left',  fontsize = fontsize, prop={'family':"Georgia", 'size':fontsize})  
 
         # legend font color
         for text in l.get_texts():
@@ -141,7 +138,10 @@ def graph_city(city, PALETTE, distance_km=3000, color_code_by='road-type', legen
         name = city[0:(city.find(','))]
         name = name.replace(" ", "_")
         suffix = "_B" if PALETTE == PALETTE_B else '_A' 
-        fig.savefig(f'./maps/{name}{suffix}.png', dpi=300, bbox_inches='tight', format="png", facecolor=fig.get_facecolor(), transparent=False);
+        fig.savefig(f'./{name}{suffix}.png', dpi=300, bbox_inches='tight', format="png", facecolor=fig.get_facecolor(), transparent=False);
 
     return fig
 
+
+PALETTE = ["#faf0ca","#f4d35e","#ee964b","#f95738", "#27BACE", "#F0F2A6"]
+graph_city("Portland, Oregon", PALETTE, distance_km=5000, color_code_by='length', include_legend=True, save=True)
