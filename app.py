@@ -15,13 +15,26 @@ st.set_page_config(page_title='Map Maker', page_icon='globe')
 container1 = st.sidebar.container()
 container2 = st.sidebar.container()
 
-PALETTE = ["#FFB7C3", "#F57A80", "#F6BD60", "#17BEBB", "#F0F2A6"]
-col1, col2, col3, col4, col5 = container2.columns(5)
-PALETTE[0] = col1.color_picker('Color 1', PALETTE[0])
-PALETTE[1] = col2.color_picker('Color 2', PALETTE[1])
-PALETTE[2] = col3.color_picker('Color 3', PALETTE[2])
-PALETTE[3] = col4.color_picker('Color 4', PALETTE[3])
-PALETTE[4] = col5.color_picker('Color 5', PALETTE[4])
+color_code_by = container2.selectbox('Color Code By', ['Road Type', 'Road Length'])
+PALETTE = ["#FFB7C3", "#750d37", "#F57A80", "#F6BD60", "#AAE28D", "#aadaba", "#17BEBB", "#F0F2A6"]
+col1, col2, col3 = container2.columns(3)
+if color_code_by == 'Road Type':
+    PALETTE[0] = col1.color_picker('Footway', PALETTE[0])
+    PALETTE[1] = col2.color_picker('Primary', PALETTE[1])
+    PALETTE[2] = col3.color_picker('Secondary', PALETTE[2])
+    PALETTE[3] = col1.color_picker('Tertiary', PALETTE[3])
+    PALETTE[4] = col2.color_picker('Cycleway', PALETTE[4])
+    PALETTE[5] = col3.color_picker('Motorway', PALETTE[5])
+    PALETTE[6] = col1.color_picker('Residential', PALETTE[6])
+    PALETTE[7] = col2.color_picker('Other', PALETTE[7])
+else:
+    PALETTE[0] = col1.color_picker('< 100 meters', PALETTE[0])
+    PALETTE[1] = col2.color_picker('100-200 meters', PALETTE[2])
+    PALETTE[2] = col3.color_picker('200-400 meters', PALETTE[3])
+    PALETTE[3] = col1.color_picker('400-800 meters', PALETTE[6])
+    PALETTE[4] = col2.color_picker('> 800 meters', PALETTE[7])
+
+
 legend_on = container2.toggle('Include legend', value=True)
 
 plt.ioff()
@@ -64,19 +77,40 @@ if city != "" or (latitude is not None and longitude is not None):
             data.append(data_elem)
 
         roadColors = []
-        for item in data:
-            if "length" in item.keys():
-                if item["length"] <= 100:
-                    color = PALETTE[0]
-                elif item["length"] > 100 and item["length"] <= 200:
-                    color = PALETTE[1]
-                elif item["length"] > 200 and item["length"] <= 400:
-                    color = PALETTE[2]
-                elif item["length"] > 400 and item["length"] <= 800:
-                    color = PALETTE[3]
-                else:
-                    color = PALETTE[4]
-            roadColors.append(color)
+        if color_code_by == 'Road Length':
+            for item in data:
+                if "length" in item.keys():
+                    if item["length"] <= 100:
+                        color = PALETTE[0]
+                    elif item["length"] > 100 and item["length"] <= 200:
+                        color = PALETTE[1]
+                    elif item["length"] > 200 and item["length"] <= 400:
+                        color = PALETTE[2]
+                    elif item["length"] > 400 and item["length"] <= 800:
+                        color = PALETTE[3]
+                    else:
+                        color = PALETTE[4]
+                roadColors.append(color)
+        elif color_code_by == 'Road Type':
+            for item in data:
+                if "highway" in item.keys() and item['highway'] != 'service':
+                    if item["highway"] in ['footway', 'pedestrian']:
+                        color = PALETTE[0]
+                    elif item["highway"] in ['primary', 'primary_link']:
+                        color = PALETTE[1]
+                    elif item["highway"] in ['secondary', 'secondary_link']:
+                        color = PALETTE[2]
+                    elif item["highway"] in ['tertiary', 'tertiary_link']:
+                        color = PALETTE[3]
+                    elif item["highway"] == 'cycleway':
+                        color = PALETTE[4]
+                    elif item["highway"] in ['motorway', 'motorway_link']:
+                        color = PALETTE[5]
+                    elif item["highway"] == 'residential':
+                        color = PALETTE[6]
+                    else:
+                        color = PALETTE[7]
+                roadColors.append(color)
 
         roadWidths = []
         for item in data:
@@ -93,8 +127,17 @@ if city != "" or (latitude is not None and longitude is not None):
         west = longitude - 0.05
 
         st.toast('Plotting map and legend')
-        fig, ax = ox.plot_graph(G, node_size=0, bbox = (north, south, east, west), figsize=(12,12), dpi = 300,  
-            bgcolor = "#1C3144", save=False, edge_color=roadColors, edge_linewidth=roadWidths, edge_alpha=1);
+        fig, ax = ox.plot_graph(G, 
+            node_size=0, 
+            # bbox = (north, south, east, west), 
+            figsize=(12,12), 
+            dpi = 300,  
+            bgcolor = "#1C3144", 
+            save=False, 
+            edge_color=roadColors, 
+            edge_linewidth=roadWidths, 
+            edge_alpha=1
+        );
 
         # text and marker size
         markersize = 12
