@@ -1,15 +1,11 @@
 import streamlit as st
 import networkx as nx
 import osmnx as ox
-import requests
 import matplotlib.cm as cm
 import matplotlib.colors as colors
 from matplotlib.lines import Line2D
 from geopy import geocoders
-from geopy.geocoders import Nominatim
-from PIL import Image, ImageOps, ImageColor, ImageFont, ImageDraw
 import matplotlib.pyplot as plt
-import os
 import re
 
 
@@ -56,16 +52,12 @@ else:
     PALETTE[4] = col2.color_picker('> 800 meters', PALETTE[7])
 
 
-include_legend = container2.toggle('Include legend', value=True)
 
 plt.ioff()
-
-geolocator = Nominatim(user_agent="sejaldua@gmail.com")
-
-
 st.title('Map Maker')
 
 mode = container1.selectbox('Choose map-maker mode', ['City Name', 'Geo-coordinates'])
+include_legend = container2.toggle('Include legend', value=True)
 city = ""
 latitude, longitude = None, None
 if mode == 'City Name':
