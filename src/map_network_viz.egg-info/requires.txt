@@ -1,0 +1,4 @@
+geopandas
+geopy
+matplotlib
+osmnx>=1.8.0

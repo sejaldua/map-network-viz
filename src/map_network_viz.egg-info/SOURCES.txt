@@ -7,4 +7,5 @@ src/map_network_viz/mapmaker.py
 src/map_network_viz.egg-info/PKG-INFO
 src/map_network_viz.egg-info/SOURCES.txt
 src/map_network_viz.egg-info/dependency_links.txt
+src/map_network_viz.egg-info/requires.txt
 src/map_network_viz.egg-info/top_level.txt

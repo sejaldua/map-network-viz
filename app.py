@@ -9,6 +9,27 @@ from geopy import geocoders
 from geopy.geocoders import Nominatim
 from PIL import Image, ImageOps, ImageColor, ImageFont, ImageDraw
 import matplotlib.pyplot as plt
+import os
+import re
+
+
+def geocode_poi(poi):
+    """
+    Geocode a point of interest from the Photon geocoder, built on top of OpenStreetMap.
+
+    Parameters:
+    poi (str): The point of interest to geocode.
+    
+    Returns:
+    tuple: The latitude and longitude of the point of interest.
+    """
+
+    geo_obj = geocoders.Photon()
+    cleaned_poi = re.sub(r'[^\w\s]','',poi).replace(' ', '+').lower()
+    result = geo_obj.geocode(cleaned_poi, exactly_one=True)
+    return (result.latitude, result.longitude)
+            #do something with the data
+
 
 st.set_page_config(page_title='Map Maker', page_icon='globe')
 
@@ -47,22 +68,22 @@ st.title('Map Maker')
 mode = container1.selectbox('Choose map-maker mode', ['City Name', 'Geo-coordinates'])
 city = ""
 latitude, longitude = None, None
-col1, col2 = container1.columns(2)
 if mode == 'City Name':
     city = container1.text_input("Please enter a city (e.g. Los Angeles, California, USA OR Tokyo, Japan) ")
 else:
-    latitude = col1.number_input('Latitude')
-    longitude = col2.number_input("longitude")
-    dist = container1.number_input('Distance (square meters) from center', value=5000)
+    poi = container1.text_input("Enter a point of interest to get its latitude and longitude coordinates")
+    col1, col2 = container1.columns(2)
+    if poi != "":
+        latitude, longitude = geocode_poi(poi)
+        latitude = col1.number_input('Latitude', value=latitude)
+        longitude = col2.number_input("Longitude", value=longitude)
+dist = container1.number_input('Distance (square meters) from center', value=5000)
 if city != "" or (latitude is not None and longitude is not None):
     if container1.button('Make Map!'):
         st.toast('Getting map data from geopandas')
         with st.spinner():
             if mode == 'City Name':
-                loc = geolocator.geocode(city)
-                latitude = loc.latitude
-                longitude = loc.longitude
-                dist = 5000
+                latitude, longitude = geocode_poi(city)
                 G = ox.graph_from_point((latitude, longitude), dist, network_type="all", retain_all=True, simplify=True)
             else:
                 G = ox.graph_from_point((latitude, longitude), dist, network_type="all", retain_all=True, simplify=True)

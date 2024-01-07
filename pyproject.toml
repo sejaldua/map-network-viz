@@ -1,6 +1,6 @@
 [project]
 name = "map-network-viz"
-version = "0.0.3"
+version = "0.0.4"
 authors = [
   { name="Sejal Dua", email="sejaldua@gmail.com" },
 ]
@@ -12,11 +12,17 @@ classifiers = [
     "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
 ]
+dependencies = [
+    "geopandas", 
+    "geopy", 
+    "matplotlib", 
+    "osmnx>=1.8.0"
+]
 
 [project.urls]
 Homepage = "https://github.com/sejaldua/map-network-viz"
 Issues = "https://github.com/sejaldua/map-network-viz/issues"
 
 [build-system]
-requires = ["setuptools>=61.0", "geopandas", "geopy", "matplotlib", "osmnx>=1.8.0"]
+requires = ["setuptools>=61.0"]
 build-backend = "setuptools.build_meta"

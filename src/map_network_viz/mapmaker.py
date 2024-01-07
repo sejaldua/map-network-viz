@@ -137,11 +137,6 @@ def graph_city(city, PALETTE, distance_km=3000, color_code_by='road-type', inclu
     if save:
         name = city[0:(city.find(','))]
         name = name.replace(" ", "_")
-        suffix = "_B" if PALETTE == PALETTE_B else '_A' 
-        fig.savefig(f'./{name}{suffix}.png', dpi=300, bbox_inches='tight', format="png", facecolor=fig.get_facecolor(), transparent=False);
+        fig.savefig(f'./{name}.png', dpi=300, bbox_inches='tight', format="png", facecolor=fig.get_facecolor(), transparent=False);
 
     return fig
-
-
-PALETTE = ["#faf0ca","#f4d35e","#ee964b","#f95738", "#27BACE", "#F0F2A6"]
-graph_city("Portland, Oregon", PALETTE, distance_km=5000, color_code_by='length', include_legend=True, save=True)
