@@ -1,21 +1,23 @@
-### Usage
+# map-network-viz
 
-What you'll need to do (via Terminal) in order to use this program:
-* `conda install -c anaconda networkx`
-* `conda install geopandas`
-* `conda install -c anaconda pillow`
-* `pip install geopy`
+### Description 
 
-When you are prompted to input a city, you must enter it in a format
-that matches the following:
-- > Portland, Oregon, USA
-- > Sydney, Australia
+This library contains functionality for visualizing street networks and making artistic maps with OpenStreetMap and Networkx. It works by wrapping around the `osmnx` library to pull city network data (nodes and edges), but it is specifically designed to help end users make highly customizable, color-coded maps!
 
-### Comparison
+### Installation
 
-<img src="city_maps/new_york_comparison.png" width="600"/>
+```bash
+python3 -m pip install map-network-viz
+```
 
+### Example Usage
 
-### Sample Maps
+```python
+from map_network_viz import *
+PALETTE = ["#FFB7C3", "#750d37", "#F57A80", "#F6BD60", "#AAE28D", "#aadaba", "#27BACE", "#F0F2A6"]
+graph_city("Portland, Oregon, USA", PALETTE)
+```
 
-<img src="city_maps/Prague.png" width="200" height="200"/><img src="city_maps/Vancouver.png" width="200" height="200"/><img src="city_maps/Portland_A.png" width="200" height="200"/>
+### Map Gallery
+
+<img src="maps/Prague.png" width="200" height="200"/><img src="maps/Vancouver.png" width="200" height="200"/><img src="maps/Portland_A.png" width="200" height="200"/>

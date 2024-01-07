@@ -1,8 +1,0 @@
-setup.py
-map_network_viz/__init__.py
-map_network_viz/mapmaker.py
-map_network_viz.egg-info/PKG-INFO
-map_network_viz.egg-info/SOURCES.txt
-map_network_viz.egg-info/dependency_links.txt
-map_network_viz.egg-info/requires.txt
-map_network_viz.egg-info/top_level.txt
