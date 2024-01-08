@@ -1,21 +1,35 @@
 #imports
 import networkx as nx
 import osmnx as ox
-import requests
 import matplotlib.cm as cm
 import matplotlib.colors as colors
 from matplotlib.lines import Line2D
 from geopy import geocoders
-from geopy.geocoders import Nominatim
 import matplotlib.pyplot as plt
 from pprint import pprint
+import re
 
 PALETTE_A = ["#AAE28D", "#37D2BB", "#E76F51", "#27BACE", "#ED4591"]
 PALETTE_B = ["#FFB7C3", "#F57A80", "#F6BD60", "#17BEBB", "#F0F2A6"]
 PALETTE_C = ["#FFB7C3", "#750d37", "#F57A80", "#F6BD60", "#AAE28D", "#aadaba", "#27BACE", "#F0F2A6"]
-PALETTE = PALETTE_C
 
-def graph_city(city, PALETTE, distance_km=3000, color_code_by='road-type', include_legend=True, save=True):
+def geocode_poi(poi):
+    """
+    Geocode a point of interest from the Photon geocoder, built on top of OpenStreetMap.
+
+    Parameters:
+    poi (str): The point of interest to geocode.
+    
+    Returns:
+    tuple: The latitude and longitude of the point of interest.
+    """
+
+    geo_obj = geocoders.Photon()
+    cleaned_poi = re.sub(r'[^\w\s]','',poi).replace(' ', '+').lower()
+    result = geo_obj.geocode(cleaned_poi, exactly_one=True)
+    return (result.latitude, result.longitude)
+
+def generate_map(city, PALETTE, distance_km=3000, color_code_by='road-type', include_legend=True, save=True):
     """
     Generates a graph of the city using OpenStreetMap and netowrkx functionality from the osmnx library.
 
@@ -40,12 +54,9 @@ def graph_city(city, PALETTE, distance_km=3000, color_code_by='road-type', inclu
     """
     
     plt.ioff()
-    geolocator = Nominatim(user_agent="sejaldua@gmail.com")
 
     try:
-        loc = geolocator.geocode(city)
-        latitude = loc.latitude
-        longitude = loc.longitude
+        latitude, longitude = geocode_poi(city)
         G = ox.graph_from_point((latitude, longitude), distance_km, network_type="all", retain_all=True, simplify=False)
     except:
         raise ValueError("City format was not recognized by OpenStreetMap. Please try specifying a city name in the format of 'City, State, Country'.")

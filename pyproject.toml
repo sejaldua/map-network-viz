@@ -1,6 +1,6 @@
 [project]
 name = "map-network-viz"
-version = "0.0.4"
+version = "0.0.5"
 authors = [
   { name="Sejal Dua", email="sejaldua@gmail.com" },
 ]
