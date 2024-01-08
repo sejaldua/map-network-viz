@@ -110,7 +110,7 @@ def generate_map(city, PALETTE, distance_km=3000, color_code_by='road-type', inc
     fig, ax = ox.plot_graph(G, 
         node_size=0, 
         # bbox = (north, south, east, west), 
-        figsize=(40,40), 
+        figsize=(12,12), 
         dpi = 300,  
         bgcolor = "#1C3144", 
         save=False, 
@@ -146,8 +146,7 @@ def generate_map(city, PALETTE, distance_km=3000, color_code_by='road-type', inc
 
     # save figure
     if save:
-        name = city[0:(city.find(','))]
-        name = name.replace(" ", "_")
-        fig.savefig(f'./{name}.png', dpi=300, bbox_inches='tight', format="png", facecolor=fig.get_facecolor(), transparent=False);
+        name = city[0:(city.find(','))].replace(" ", "_")
+        fig.savefig(f'{name}.png', dpi=300, bbox_inches='tight', format="png", facecolor=fig.get_facecolor(), transparent=False);
 
     return fig
