@@ -34,6 +34,8 @@ container2 = st.sidebar.container()
 
 color_code_by = container2.selectbox('Color Code By', ['Road Type', 'Road Length'])
 PALETTE = ["#FFB7C3", "#750d37", "#F57A80", "#F6BD60", "#AAE28D", "#aadaba", "#17BEBB", "#F0F2A6"]
+BACKGROUND_COLOR = '#1C3144'
+BACKGROUND_COLOR = container2.color_picker('Background Color', BACKGROUND_COLOR)
 col1, col2, col3 = container2.columns(3)
 if color_code_by == 'Road Type':
     PALETTE[0] = col1.color_picker('Footway', PALETTE[0])
@@ -56,30 +58,22 @@ else:
 plt.ioff()
 st.title('Map Maker')
 
-mode = container1.selectbox('Choose map-maker mode', ['City Name', 'Geo-coordinates'])
 include_legend = container2.toggle('Include legend', value=True)
-city = ""
+query = container1.text_input("Enter a city name or point of interest")
+container1.caption('Note: specify the state and/or country for more precise results')
+col1, col2 = container1.columns(2)
 latitude, longitude = None, None
-if mode == 'City Name':
-    city = container1.text_input("Please enter a city (e.g. Los Angeles, California, USA OR Tokyo, Japan) ")
-else:
-    poi = container1.text_input("Enter a point of interest to get its latitude and longitude coordinates")
-    col1, col2 = container1.columns(2)
-    if poi != "":
-        latitude, longitude = geocode_poi(poi)
-        latitude = col1.number_input('Latitude', value=latitude)
-        longitude = col2.number_input("Longitude", value=longitude)
+if query != "":
+    latitude, longitude = geocode_poi(query)
+    latitude = col1.number_input('Latitude', value=latitude)
+    longitude = col2.number_input("Longitude", value=longitude)
 dist = container1.number_input('Distance (square meters) from center', value=5000)
-if city != "" or (latitude is not None and longitude is not None):
+if query != "" or (latitude is not None and longitude is not None):
     if container1.button('Make Map!'):
         st.toast('Getting map data from geopandas')
         with st.spinner():
-            if mode == 'City Name':
-                latitude, longitude = geocode_poi(city)
-                G = ox.graph_from_point((latitude, longitude), dist, network_type="all", retain_all=True, simplify=True)
-            else:
-                G = ox.graph_from_point((latitude, longitude), dist, network_type="all", retain_all=True, simplify=True)
-            print(ox.stats.basic_stats(G))
+            G = ox.graph_from_point((latitude, longitude), dist, network_type="all", retain_all=True, simplify=True)
+            st.write(ox.stats.basic_stats(G))
 
         st.toast('Color-coding streets and highways')
         u, v, key, data = [], [], [], []
@@ -103,6 +97,8 @@ if city != "" or (latitude is not None and longitude is not None):
                         color = PALETTE[3]
                     else:
                         color = PALETTE[4]
+                else:
+                    color = BACKGROUND_COLOR
                 roadColors.append(color)
         elif color_code_by == 'Road Type':
             for item in data:
@@ -123,6 +119,8 @@ if city != "" or (latitude is not None and longitude is not None):
                         color = PALETTE[6]
                     else:
                         color = PALETTE[7]
+                else:
+                    color = BACKGROUND_COLOR
                 roadColors.append(color)
 
         roadWidths = []
@@ -145,7 +143,7 @@ if city != "" or (latitude is not None and longitude is not None):
             # bbox = (north, south, east, west), 
             figsize=(12,12), 
             dpi = 300,  
-            bgcolor = "#1C3144", 
+            bgcolor = BACKGROUND_COLOR, 
             save=False, 
             edge_color=roadColors, 
             edge_linewidth=roadWidths, 
@@ -179,9 +177,7 @@ if city != "" or (latitude is not None and longitude is not None):
                 text.set_color("w")
 
         st.pyplot(fig)
-        name = city[0:(city.find(','))]
-        name = name.replace(" ", "_")
-        # Save to file first or an image file has already existed.
+        name = re.sub(r'[^\w\s]','',query).replace(' ', '_')
         fn = f'{name}.png'
         plt.savefig(fn, dpi=300, bbox_inches='tight', format="png", facecolor=fig.get_facecolor(), transparent=False)
         with open(fn, "rb") as img:
@@ -191,4 +187,3 @@ if city != "" or (latitude is not None and longitude is not None):
                 file_name=fn,
                 mime="image/png"
             )
-
