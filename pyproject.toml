@@ -1,6 +1,6 @@
 [project]
 name = "map-network-viz"
-version = "0.0.5"
+version = "0.0.10"
 authors = [
   { name="Sejal Dua", email="sejaldua@gmail.com" },
 ]
@@ -16,7 +16,8 @@ dependencies = [
     "geopandas", 
     "geopy", 
     "matplotlib", 
-    "osmnx>=1.8.0"
+    "osmnx>=1.8.0",
+    "urllib3<2.0"
 ]
 
 [project.urls]

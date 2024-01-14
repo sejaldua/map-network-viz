@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: map-network-viz
-Version: 0.0.5
+Version: 0.0.10
 Summary: A small wrapper for visualizing street networks and making artistic maps with OpenStreetMap and Networkx.
 Author-email: Sejal Dua <sejaldua@gmail.com>
 Project-URL: Homepage, https://github.com/sejaldua/map-network-viz
@@ -15,6 +15,7 @@ Requires-Dist: geopandas
 Requires-Dist: geopy
 Requires-Dist: matplotlib
 Requires-Dist: osmnx>=1.8.0
+Requires-Dist: urllib3<2.0
 
 # map-network-viz
 
@@ -44,4 +45,4 @@ generate_map("Tokyo, Japan", PALETTE, distance_km=5000, color_code_by='length', 
 
 ### Map Gallery
 
-<img src="maps/Prague.png" width="200" height="200"/><img src="maps/Vancouver.png" width="200" height="200"/><img src="maps/Portland_A.png" width="200" height="200"/>
+<img src="https://github.com/sejaldua/map-network-viz/raw/master/maps/Boston.png" width="200" height="200"/><img src="https://github.com/sejaldua/map-network-viz/raw/master/maps/Vancouver.png" width="200" height="200"/><img src="https://github.com/sejaldua/map-network-viz/raw/master/maps/Portland_A.png" width="200" height="200"/>

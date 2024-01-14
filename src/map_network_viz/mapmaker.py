@@ -1,35 +1,34 @@
 #imports
-import networkx as nx
 import osmnx as ox
-import matplotlib.cm as cm
-import matplotlib.colors as colors
 from matplotlib.lines import Line2D
 from geopy import geocoders
 import matplotlib.pyplot as plt
-from pprint import pprint
 import re
 
-PALETTE_A = ["#AAE28D", "#37D2BB", "#E76F51", "#27BACE", "#ED4591"]
-PALETTE_B = ["#FFB7C3", "#F57A80", "#F6BD60", "#17BEBB", "#F0F2A6"]
-PALETTE_C = ["#FFB7C3", "#750d37", "#F57A80", "#F6BD60", "#AAE28D", "#aadaba", "#27BACE", "#F0F2A6"]
+# PALETTE_A = ["#AAE28D", "#37D2BB", "#E76F51", "#27BACE", "#ED4591"]
+# PALETTE_B = ["#FFB7C3", "#F57A80", "#F6BD60", "#17BEBB", "#F0F2A6"]
+DEFAULT_PALETTE = ["#FFB7C3", "#750d37", "#F57A80", "#F6BD60", "#AAE28D", "#aadaba", "#27BACE", "#F0F2A6"]
 
-def geocode_poi(poi):
+def geocode(query):
     """
     Geocode a point of interest from the Photon geocoder, built on top of OpenStreetMap.
 
     Parameters:
-    poi (str): The point of interest to geocode.
+    query (str): The point of interest to geocode.
     
     Returns:
     tuple: The latitude and longitude of the point of interest.
     """
 
     geo_obj = geocoders.Photon()
-    cleaned_poi = re.sub(r'[^\w\s]','',poi).replace(' ', '+').lower()
-    result = geo_obj.geocode(cleaned_poi, exactly_one=True)
+    cleaned_str = re.sub(r'[^\w\s]','',query).replace(' ', '+').lower()
+    try:
+        result = geo_obj.geocode(cleaned_str, exactly_one=True)
+    except:
+        raise ValueError("The entered query was not recognized by the geocoder. Please try again.")
     return (result.latitude, result.longitude)
 
-def generate_map(city, PALETTE, distance_km=3000, color_code_by='road-type', include_legend=True, save=True):
+def generate_map(city, PALETTE=DEFAULT_PALETTE, distance_km=3000, color_code_by='road-type', include_legend=True, save=True):
     """
     Generates a graph of the city using OpenStreetMap and netowrkx functionality from the osmnx library.
 
@@ -56,16 +55,14 @@ def generate_map(city, PALETTE, distance_km=3000, color_code_by='road-type', inc
     plt.ioff()
 
     try:
-        latitude, longitude = geocode_poi(city)
+        latitude, longitude = geocode(city)
         G = ox.graph_from_point((latitude, longitude), distance_km, network_type="all", retain_all=True, simplify=False)
     except:
         raise ValueError("City format was not recognized by OpenStreetMap. Please try specifying a city name in the format of 'City, State, Country'.")
 
-    u, v, key, data = [], [], [], []
-    for u_elem, v_elem, key_elem, data_elem in G.edges(keys = True, data = True):
-        u.append(u_elem)
-        v.append(v_elem)
-        key.append(key_elem)
+    # get street data from the edges of the graph
+    data = []
+    for _, _, _, data_elem in G.edges(keys = True, data = True):
         data.append(data_elem)
 
     roadColors = []
@@ -106,7 +103,6 @@ def generate_map(city, PALETTE, distance_km=3000, color_code_by='road-type', inc
 
     roadWidths = [1 if item['highway'] == 'footway' else 2.5 for item in data]
 
-    # Make Map
     fig, ax = ox.plot_graph(G, 
         node_size=0, 
         # bbox = (north, south, east, west), 
@@ -120,7 +116,6 @@ def generate_map(city, PALETTE, distance_km=3000, color_code_by='road-type', inc
     );
 
     if include_legend:
-        # text and marker size
         markersize = 10
         fontsize = 10
         if color_code_by == 'length':
@@ -140,11 +135,9 @@ def generate_map(city, PALETTE, distance_km=3000, color_code_by='road-type', inc
                     Line2D([0], [0], marker='s', color="#061529", label= 'Other', markerfacecolor=PALETTE[7], markersize=markersize)]     
         l = ax.legend(handles=legend_elements, bbox_to_anchor=(0.0, 0.0), frameon=True, ncol=1, facecolor = '#061529', framealpha = 0.9, loc='lower left',  fontsize = fontsize, prop={'family':"Georgia", 'size':fontsize})  
 
-        # legend font color
         for text in l.get_texts():
             text.set_color("w")
 
-    # save figure
     if save:
         name = city[0:(city.find(','))].replace(" ", "_")
         fig.savefig(f'{name}.png', dpi=300, bbox_inches='tight', format="png", facecolor=fig.get_facecolor(), transparent=False);

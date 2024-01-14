@@ -26,4 +26,4 @@ generate_map("Tokyo, Japan", PALETTE, distance_km=5000, color_code_by='length', 
 
 ### Map Gallery
 
-<img src="maps/Prague.png" width="200" height="200"/><img src="maps/Vancouver.png" width="200" height="200"/><img src="maps/Portland_A.png" width="200" height="200"/>
+<img src="https://github.com/sejaldua/map-network-viz/raw/master/maps/Boston.png" width="200" height="200"/><img src="https://github.com/sejaldua/map-network-viz/raw/master/maps/Vancouver.png" width="200" height="200"/><img src="https://github.com/sejaldua/map-network-viz/raw/master/maps/Portland_A.png" width="200" height="200"/>

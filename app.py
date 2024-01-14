@@ -7,7 +7,7 @@ from matplotlib.lines import Line2D
 from geopy import geocoders
 import matplotlib.pyplot as plt
 import re
-
+from pprint import pprint
 
 def geocode_poi(poi):
     """
@@ -23,8 +23,8 @@ def geocode_poi(poi):
     geo_obj = geocoders.Photon()
     cleaned_poi = re.sub(r'[^\w\s]','',poi).replace(' ', '+').lower()
     result = geo_obj.geocode(cleaned_poi, exactly_one=True)
+    pprint(result.raw)
     return (result.latitude, result.longitude)
-            #do something with the data
 
 
 st.set_page_config(page_title='Map Maker', page_icon='globe')
@@ -69,12 +69,13 @@ if query != "":
     longitude = col2.number_input("Longitude", value=longitude)
 dist = container1.number_input('Distance (square meters) from center', value=5000)
 if query != "" or (latitude is not None and longitude is not None):
+    street_names = set()
     if container1.button('Make Map!'):
         st.toast('Getting map data from geopandas')
         with st.spinner():
-            G = ox.graph_from_point((latitude, longitude), dist, network_type="all", retain_all=True, simplify=True)
+            G = ox.graph_from_point((latitude, longitude), dist, network_type="all", retain_all=True, simplify=False)
             st.write(ox.stats.basic_stats(G))
-
+  
         st.toast('Color-coding streets and highways')
         u, v, key, data = [], [], [], []
         for u_elem, v_elem, key_elem, data_elem in G.edges(keys = True, data = True):
