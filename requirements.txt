@@ -2,4 +2,4 @@ osmnx
 geopandas
 geopy
 matplotlib
-urllib3==1.26.6
+urllib3==1.26.18
