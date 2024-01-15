@@ -23,7 +23,6 @@ def geocode_poi(poi):
     geo_obj = geocoders.Photon()
     cleaned_poi = re.sub(r'[^\w\s]','',poi).replace(' ', '+').lower()
     result = geo_obj.geocode(cleaned_poi, exactly_one=True)
-    pprint(result.raw)
     return (result.latitude, result.longitude)
 
 
@@ -74,14 +73,11 @@ if query != "" or (latitude is not None and longitude is not None):
         st.toast('Getting map data from geopandas')
         with st.spinner():
             G = ox.graph_from_point((latitude, longitude), dist, network_type="all", retain_all=True, simplify=False)
-            st.write(ox.stats.basic_stats(G))
+            # st.write(ox.stats.basic_stats(G))
   
         st.toast('Color-coding streets and highways')
-        u, v, key, data = [], [], [], []
-        for u_elem, v_elem, key_elem, data_elem in G.edges(keys = True, data = True):
-            u.append(u_elem)
-            v.append(v_elem)
-            key.append(key_elem)
+        data = []
+        for _, _, _, data_elem in G.edges(keys = True, data = True):
             data.append(data_elem)
 
         roadColors = []

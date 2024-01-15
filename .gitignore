@@ -2,3 +2,4 @@ cache
 .DS_Store
 .pypirc
 examples/__pycache__/
+examples/.ipynb_checkpoints/
