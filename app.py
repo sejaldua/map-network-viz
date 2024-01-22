@@ -167,7 +167,7 @@ if query != "" or (latitude is not None and longitude is not None):
                         Line2D([0], [0], marker='s', color="#061529", label= 'Motorway', markerfacecolor=PALETTE[5], markersize=markersize), 
                         Line2D([0], [0], marker='s', color="#061529", label= 'Residential', markerfacecolor=PALETTE[6], markersize=markersize),
                         Line2D([0], [0], marker='s', color="#061529", label= 'Other', markerfacecolor=PALETTE[7], markersize=markersize)]     
-            l = ax.legend(handles=legend_elements, bbox_to_anchor=(0.0, 0.0), frameon=True, ncol=1, facecolor = '#061529', framealpha = 0.9, loc='lower left',  fontsize = fontsize, prop={'family':"Georgia", 'size':fontsize})  
+            l = ax.legend(handles=legend_elements, bbox_to_anchor=(0.0, 0.0), frameon=True, ncol=1, facecolor = '#061529', framealpha = 0.9, loc='lower left',  fontsize = fontsize, prop={'size':fontsize})  
 
             # legend font color
             for text in l.get_texts():
