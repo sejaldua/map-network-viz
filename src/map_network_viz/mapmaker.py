@@ -7,6 +7,7 @@ import re
 
 # PALETTE_A = ["#AAE28D", "#37D2BB", "#E76F51", "#27BACE", "#ED4591"]
 # PALETTE_B = ["#FFB7C3", "#F57A80", "#F6BD60", "#17BEBB", "#F0F2A6"]
+BACKGROUND_COLOR = "#1C3144"
 DEFAULT_PALETTE = ["#FFB7C3", "#750d37", "#F57A80", "#F6BD60", "#AAE28D", "#aadaba", "#27BACE", "#F0F2A6"]
 
 def geocode(query):
@@ -65,50 +66,58 @@ def generate_map(city, PALETTE=DEFAULT_PALETTE, distance_km=3000, color_code_by=
     for _, _, _, data_elem in G.edges(keys = True, data = True):
         data.append(data_elem)
 
+    # Edges with no usable tag (or service roads) are drawn in the background
+    # color so they blend in, instead of reusing the previous edge's color.
     roadColors = []
     if color_code_by == 'length':
         for item in data:
-            if "length" in item.keys():
-                if item["length"] <= 100:
-                    color = PALETTE[0]
-                elif item["length"] > 100 and item["length"] <= 200:
-                    color = PALETTE[1]
-                elif item["length"] > 200 and item["length"] <= 400:
-                    color = PALETTE[2]
-                elif item["length"] > 400 and item["length"] <= 800:
-                    color = PALETTE[3]
-                else:
-                    color = PALETTE[4]
+            length = item.get("length")
+            if length is None:
+                color = BACKGROUND_COLOR
+            elif length <= 100:
+                color = PALETTE[0]
+            elif length <= 200:
+                color = PALETTE[1]
+            elif length <= 400:
+                color = PALETTE[2]
+            elif length <= 800:
+                color = PALETTE[3]
+            else:
+                color = PALETTE[4]
             roadColors.append(color)
     elif color_code_by == 'road-type':
         for item in data:
-            if "highway" in item.keys() and item['highway'] != 'service':
-                if item["highway"] in ['footway', 'pedestrian']:
-                    color = PALETTE[0]
-                elif item["highway"] in ['primary', 'primary_link']:
-                    color = PALETTE[1]
-                elif item["highway"] in ['secondary', 'secondary_link']:
-                    color = PALETTE[2]
-                elif item["highway"] in ['tertiary', 'tertiary_link']:
-                    color = PALETTE[3]
-                elif item["highway"] == 'cycleway':
-                    color = PALETTE[4]
-                elif item["highway"] in ['motorway', 'motorway_link']:
-                    color = PALETTE[5]
-                elif item["highway"] == 'residential':
-                    color = PALETTE[6]
-                else:
-                    color = PALETTE[7]
+            highway = item.get("highway")
+            if highway is None or highway == 'service':
+                color = BACKGROUND_COLOR
+            elif highway in ['footway', 'pedestrian']:
+                color = PALETTE[0]
+            elif highway in ['primary', 'primary_link']:
+                color = PALETTE[1]
+            elif highway in ['secondary', 'secondary_link']:
+                color = PALETTE[2]
+            elif highway in ['tertiary', 'tertiary_link']:
+                color = PALETTE[3]
+            elif highway == 'cycleway':
+                color = PALETTE[4]
+            elif highway in ['motorway', 'motorway_link']:
+                color = PALETTE[5]
+            elif highway == 'residential':
+                color = PALETTE[6]
+            else:
+                color = PALETTE[7]
             roadColors.append(color)
+    else:
+        raise ValueError("color_code_by must be 'road-type' or 'length'.")
 
-    roadWidths = [1 if item['highway'] == 'footway' else 2.5 for item in data]
+    roadWidths = [1 if item.get('highway') == 'footway' else 2.5 for item in data]
 
     fig, ax = ox.plot_graph(G, 
         node_size=0, 
         # bbox = (north, south, east, west), 
         figsize=(12,12), 
         dpi = 300,  
-        bgcolor = "#1C3144", 
+        bgcolor = BACKGROUND_COLOR, 
         save=False, 
         edge_color=roadColors, 
         edge_linewidth=roadWidths, 
