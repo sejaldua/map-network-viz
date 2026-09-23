@@ -4,6 +4,7 @@ from matplotlib.lines import Line2D
 from geopy import geocoders
 import matplotlib.pyplot as plt
 import re
+import warnings
 
 # PALETTE_A = ["#AAE28D", "#37D2BB", "#E76F51", "#27BACE", "#ED4591"]
 # PALETTE_B = ["#FFB7C3", "#F57A80", "#F6BD60", "#17BEBB", "#F0F2A6"]
@@ -29,7 +30,7 @@ def geocode(query):
         raise ValueError("The entered query was not recognized by the geocoder. Please try again.")
     return (result.latitude, result.longitude)
 
-def generate_map(city, PALETTE=DEFAULT_PALETTE, distance_km=3000, color_code_by='road-type', include_legend=True, save=True):
+def generate_map(city, PALETTE=DEFAULT_PALETTE, distance_m=3000, color_code_by='road-type', include_legend=True, save=True, distance_km=None):
     """
     Generates a graph of the city using OpenStreetMap and netowrkx functionality from the osmnx library.
 
@@ -39,25 +40,37 @@ def generate_map(city, PALETTE=DEFAULT_PALETTE, distance_km=3000, color_code_by=
         The city to graph.
     PALETTE : list
         The list of colors to use for the graph.
-    distance_km : int
-        The distance (in kilometers) within which to graph the city.
+    distance_m : int
+        The distance (in meters) from the city center within which to graph the city.
     color_code_by : str
         The type of attribute to use to color the graph. Options are 'road-type' or 'length'. Defaults to 'road-type'.
     include_legend : bool
         Whether or not to add a legend to the graph.
     save : bool
         Whether or not to save the graph as a png file.
+    distance_km : int, optional
+        Deprecated alias for `distance_m`. Despite its name, this value has always
+        been interpreted as meters, and it still is for backwards compatibility.
 
     Returns
     -------
     The Matplotlib figure containing the graph.
     """
     
+    if distance_km is not None:
+        warnings.warn(
+            "`distance_km` is deprecated and was always interpreted as meters; "
+            "use `distance_m` instead.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        distance_m = distance_km
+
     plt.ioff()
 
     try:
         latitude, longitude = geocode(city)
-        G = ox.graph_from_point((latitude, longitude), distance_km, network_type="all", retain_all=True, simplify=False)
+        G = ox.graph_from_point((latitude, longitude), dist=distance_m, network_type="all", retain_all=True, simplify=False)
     except:
         raise ValueError("City format was not recognized by OpenStreetMap. Please try specifying a city name in the format of 'City, State, Country'.")
 

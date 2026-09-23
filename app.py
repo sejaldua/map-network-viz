@@ -66,7 +66,7 @@ if query != "":
     latitude, longitude = geocode_poi(query)
     latitude = col1.number_input('Latitude', value=latitude)
     longitude = col2.number_input("Longitude", value=longitude)
-dist = container1.number_input('Distance (square meters) from center', value=5000)
+dist = container1.number_input('Distance (meters) from center', value=5000)
 if query != "" or (latitude is not None and longitude is not None):
     street_names = set()
     if container1.button('Make Map!'):
