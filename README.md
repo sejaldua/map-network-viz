@@ -21,7 +21,7 @@ generate_map("Portland, Oregon, USA", PALETTE)
 ```python
 from map_network_viz import *
 PALETTE = ["#FFB7C3", "#750d37", "#F57A80", "#F6BD60", "#AAE28D", "#aadaba", "#27BACE", "#F0F2A6"]
-generate_map("Tokyo, Japan", PALETTE, distance_km=5000, color_code_by='length', include_legend=True, save=False)
+generate_map("Tokyo, Japan", PALETTE, distance_m=5000, color_code_by='length', include_legend=True, save=False)
 ```
 
 ### Map Gallery
